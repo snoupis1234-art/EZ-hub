@@ -1,389 +1,305 @@
 -- ==========================================
--- EZ HUB | PERFECT X BUTTON V20
+-- EZ HUB | MOBILE FISHING & SETTINGS (RAYFIELD UI)
 -- ==========================================
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "EZ Hub | Fishing & Settings",
+   LoadingTitle = "EZ Hub Loading...",
+   LoadingSubtitle = "by You",
+   ConfigurationSaving = {
+      Enabled = false,
+   },
+   KeySystem = false,
+})
+
+-- Tabs
+local FishingTab = Window:CreateTab("Fishing", 4483362458)
+local SettingsTab = Window:CreateTab("Settings", 4483362458)
+
 local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
 local PlayerGui = Player:WaitForChild("PlayerGui")
+local VirtualInputManager = game:GetService("VirtualInputManager")
 local Workspace = game:GetService("Workspace")
-local UserInputService = game:GetService("UserInputService")
-local VirtualUser = game:GetService("VirtualUser")
+local Lighting = game:GetService("Lighting")
+local TeleportService = game:GetService("TeleportService")
 
-if PlayerGui:FindFirstChild("EZHubProUI") then
-    PlayerGui.EZHubProUI:Destroy()
-end
-
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "EZHubProUI"
-ScreenGui.ResetOnSpawn = false
-ScreenGui.Parent = PlayerGui
-
--- ==========================================
--- 1. TOGGLE "EZ" SQUARE (Κρυφό στην αρχή)
--- ==========================================
-local ToggleButton = Instance.new("TextButton")
-ToggleButton.Size = UDim2.new(0, 50, 0, 50)
-ToggleButton.Position = UDim2.new(0, 50, 0, 50)
-ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-ToggleButton.BorderSizePixel = 0
-ToggleButton.Text = ""
-ToggleButton.Visible = false 
-ToggleButton.Parent = ScreenGui
-
-local ToggleCorner = Instance.new("UICorner")
-ToggleCorner.CornerRadius = UDim.new(0, 12)
-ToggleCorner.Parent = ToggleButton
-
-local UIGradient = Instance.new("UIGradient")
-UIGradient.Color = ColorSequence.new{
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 170, 0)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 69, 0))
-}
-UIGradient.Rotation = 45
-UIGradient.Parent = ToggleButton
-
-local ToggleText = Instance.new("TextLabel")
-ToggleText.Size = UDim2.new(1, 0, 1, 0)
-ToggleText.BackgroundTransparency = 1
-ToggleText.Text = "EZ"
-ToggleText.TextColor3 = Color3.fromRGB(255, 255, 255)
-ToggleText.TextSize = 18
-ToggleText.Font = Enum.Font.GothamBold
-ToggleText.Parent = ToggleButton
-
-local UIStroke = Instance.new("UIStroke")
-UIStroke.Color = Color3.fromRGB(255, 255, 255)
-UIStroke.Thickness = 2
-UIStroke.Transparency = 0.3
-UIStroke.Parent = ToggleButton
-
--- ==========================================
--- 2. KEY SYSTEM POPUP WINDOW
--- ==========================================
-local KeyFrame = Instance.new("Frame")
-KeyFrame.Size = UDim2.new(0, 320, 0, 190)
-KeyFrame.Position = UDim2.new(0.5, -160, 0.5, -95)
-KeyFrame.BackgroundColor3 = Color3.fromRGB(22, 24, 30)
-KeyFrame.BorderSizePixel = 0
-KeyFrame.Visible = true
-KeyFrame.Parent = ScreenGui
-
-local KeyCorner = Instance.new("UICorner")
-KeyCorner.CornerRadius = UDim.new(0, 10)
-KeyCorner.Parent = KeyFrame
-
-local KeyTitle = Instance.new("TextLabel")
-KeyTitle.Size = UDim2.new(1, 0, 0, 45)
-KeyTitle.BackgroundTransparency = 1
-KeyTitle.Text = "⚡ EZ HUB - KEY SYSTEM"
-KeyTitle.TextColor3 = Color3.fromRGB(255, 170, 0)
-KeyTitle.TextSize = 16
-KeyTitle.Font = Enum.Font.GothamBold
-KeyTitle.Parent = KeyFrame
-
--- Κουμπί X φτιαγμένο με γραμμές (Frames) για να φαίνεται πάντα τέλειο
-local KeyCloseBtn = Instance.new("TextButton")
-KeyCloseBtn.Size = UDim2.new(0, 30, 0, 30)
-KeyCloseBtn.Position = UDim2.new(1, -38, 0, 8)
-KeyCloseBtn.BackgroundColor3 = Color3.fromRGB(235, 69, 95)
-KeyCloseBtn.BorderSizePixel = 0
-KeyCloseBtn.Text = ""
-KeyCloseBtn.Parent = KeyFrame
-
-local KeyCloseCorner = Instance.new("UICorner")
-KeyCloseCorner.CornerRadius = UDim.new(0, 6)
-KeyCloseCorner.Parent = KeyCloseBtn
-
--- Γραμμή 1 του X
-local XLine1 = Instance.new("Frame")
-XLine1.Size = UDim2.new(0, 16, 0, 2)
-XLine1.Position = UDim2.new(0.5, -8, 0.5, -1)
-XLine1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-XLine1.BorderSizePixel = 0
-XLine1.Rotation = 45
-XLine1.Parent = KeyCloseBtn
-
--- Γραμμή 2 του X
-local XLine2 = Instance.new("Frame")
-XLine2.Size = UDim2.new(0, 16, 0, 2)
-XLine2.Position = UDim2.new(0.5, -8, 0.5, -1)
-XLine2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-XLine2.BorderSizePixel = 0
-XLine2.Rotation = -45
-XLine2.Parent = KeyCloseBtn
-
-KeyCloseBtn.MouseButton1Click:Connect(function()
-    KeyFrame.Visible = false
-    ToggleButton.Visible = true
-end)
-
-local TextBox = Instance.new("TextBox")
-TextBox.Size = UDim2.new(0.85, 0, 0, 40)
-TextBox.Position = UDim2.new(0.075, 0, 0.38, 0)
-TextBox.BackgroundColor3 = Color3.fromRGB(30, 33, 42)
-TextBox.BorderSizePixel = 0
-TextBox.PlaceholderText = "Enter site code..."
-TextBox.Text = ""
-TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-TextBox.PlaceholderColor3 = Color3.fromRGB(120, 120, 120)
-TextBox.TextSize = 14
-TextBox.Font = Enum.Font.Gotham
-TextBox.Parent = KeyFrame
-
-local BoxCorner = Instance.new("UICorner")
-BoxCorner.CornerRadius = UDim.new(0, 6)
-BoxCorner.Parent = TextBox
-
-local SubmitBtn = Instance.new("TextButton")
-SubmitBtn.Size = UDim2.new(0.85, 0, 0, 38)
-SubmitBtn.Position = UDim2.new(0.075, 0, 0.72, 0)
-SubmitBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
-SubmitBtn.BorderSizePixel = 0
-SubmitBtn.Text = "UNLOCK HUB"
-SubmitBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-SubmitBtn.TextSize = 15
-SubmitBtn.Font = Enum.Font.GothamBold
-SubmitBtn.Parent = KeyFrame
-
-local BtnCorner = Instance.new("UICorner")
-BtnCorner.CornerRadius = UDim.new(0, 6)
-BtnCorner.Parent = SubmitBtn
-
--- ==========================================
--- 3. MAIN PRO GUI
--- ==========================================
-local MainFrame = Instance.new("Frame")
-MainFrame.Size = UDim2.new(0, 320, 0, 360)
-MainFrame.Position = UDim2.new(0.5, -160, 0.5, -180)
-MainFrame.BackgroundColor3 = Color3.fromRGB(22, 24, 30)
-MainFrame.BorderSizePixel = 0
-MainFrame.Visible = false
-MainFrame.Parent = ScreenGui
-
-local MainCorner = Instance.new("UICorner")
-MainCorner.CornerRadius = UDim.new(0, 10)
-MainCorner.Parent = MainFrame
-
-local TopBar = Instance.new("Frame")
-TopBar.Size = UDim2.new(1, 0, 0, 45)
-TopBar.BackgroundColor3 = Color3.fromRGB(28, 31, 38)
-TopBar.BorderSizePixel = 0
-TopBar.Parent = MainFrame
-
-local TopCorner = Instance.new("UICorner")
-TopCorner.CornerRadius = UDim.new(0, 10)
-TopCorner.Parent = TopBar
-
-local MainTitle = Instance.new("TextLabel")
-MainTitle.Size = UDim2.new(0.7, 0, 1, 0)
-MainTitle.Position = UDim2.new(0.05, 0, 0, 0)
-MainTitle.BackgroundTransparency = 1
-MainTitle.Text = "⚡ EZ HUB - CONTROL PANEL"
-MainTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-MainTitle.TextSize = 15
-MainTitle.Font = Enum.Font.GothamBold
-MainTitle.TextXAlignment = Enum.TextXAlignment.Left
-MainTitle.Parent = TopBar
-
-local CloseBtn = Instance.new("TextButton")
-CloseBtn.Size = UDim2.new(0, 30, 0, 30)
-CloseBtn.Position = UDim2.new(1, -38, 0.5, -15)
-CloseBtn.BackgroundColor3 = Color3.fromRGB(235, 69, 95)
-CloseBtn.BorderSizePixel = 0
-CloseBtn.Text = "-"
-CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-CloseBtn.TextSize = 18
-CloseBtn.Font = Enum.Font.GothamBold
-CloseBtn.Parent = TopBar
-
-local CloseCorner = Instance.new("UICorner")
-CloseCorner.CornerRadius = UDim.new(0, 6)
-CloseCorner.Parent = CloseBtn
-
-local function createProButton(name, yPos, color)
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(0.88, 0, 0, 42)
-    btn.Position = UDim2.new(0.06, 0, 0, yPos)
-    btn.BackgroundColor3 = color or Color3.fromRGB(30, 33, 42)
-    btn.BorderSizePixel = 0
-    btn.Text = name
-    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    btn.TextSize = 14
-    btn.Font = Enum.Font.GothamBold
-    btn.Parent = MainFrame
-
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 6)
-    corner.Parent = btn
-
-    return btn
-end
-
-local autoBuyBtn = createProButton("Auto Buy (500k+): OFF", 58, Color3.fromRGB(30, 33, 42))
-local speedBtn   = createProButton("Speed Boost: OFF", 108, Color3.fromRGB(30, 33, 42))
-local jumpBtn    = createProButton("Jump Boost: OFF", 158, Color3.fromRGB(30, 33, 42))
-local serverHop  = createProButton("Server Hop", 215, Color3.fromRGB(33, 150, 243))
-local leaveBtn   = createProButton("Leave", 270, Color3.fromRGB(33, 150, 243))
-
--- ==========================================
--- 4. LOGIC & FUNCTIONALITY
--- ==========================================
-local correctCode = "928ee7"
-local isUnlocked = false
-
-SubmitBtn.MouseButton1Click:Connect(function()
-    if TextBox.Text == correctCode then
-        isUnlocked = true
-        KeyFrame:Destroy()
-        MainFrame.Visible = true
-        ToggleButton.Visible = true
-        
-        task.spawn(function()
-            pcall(function()
-                Player.Idled:Connect(function()
-                    VirtualUser:CaptureController()
-                    VirtualUser:ClickButton2(Vector2.new())
-                end)
-            end)
+-- Anti-Idle (Κλειδωμένο στο On)
+task.spawn(function()
+    pcall(function()
+        Player.Idled:Connect(function()
+            local VirtualUser = game:GetService("VirtualUser")
+            VirtualUser:CaptureController()
+            VirtualUser:ClickButton2(Vector2.new())
         end)
-    else
-        TextBox.Text = ""
-        TextBox.PlaceholderText = "WRONG CODE! TRY AGAIN"
+    end)
+    while true do
+        pcall(function()
+            local VirtualUser = game:GetService("VirtualUser")
+            VirtualUser:CaptureController()
+            VirtualUser:ClickButton2(Vector2.new())
+        end)
+        task.wait(60)
     end
 end)
 
-CloseBtn.MouseButton1Click:Connect(function()
-    MainFrame.Visible = false
-    ToggleButton.Visible = true
-end)
+local fishingActive = false
+local espActive = false
+local singleBeamInstance = nil
+local singlePartAbove = nil
+local singleHighlight = nil
+local att1, att2 = nil, nil
 
-local dragging, dragStart, startPos
-local totalMoved = 0
+-- Mobile Touch Simulation
+local function tapScreen(x, y)
+    pcall(function()
+        VirtualInputManager:SendTouchEvent(0, 0, x, y)
+        task.wait(0.02)
+        VirtualInputManager:SendTouchEvent(0, 2, x, y)
+    end)
+end
 
-ToggleButton.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragging = true
-        dragStart = input.Position
-        startPos = ToggleButton.Position
-        totalMoved = 0
-    end
-end)
-
-UserInputService.InputChanged:Connect(function(input)
-    if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-        local delta = input.Position - dragStart
-        totalMoved = math.abs(delta.X) + math.abs(delta.Y)
-        ToggleButton.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-    end
-end)
-
-UserInputService.InputEnded:Connect(function(input)
-    if dragging and (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then
-        dragging = false
-        if totalMoved < 6 then
-            if not isUnlocked then
-                KeyFrame.Visible = not KeyFrame.Visible
-            else
-                MainFrame.Visible = not MainFrame.Visible
+-- Συνάρτηση ανίχνευσης "waiting for a bite"
+local function isWaitingForBite()
+    local found = false
+    pcall(function()
+        for _, gui in ipairs(PlayerGui:GetDescendants()) do
+            if gui:IsA("TextLabel") or gui:IsA("TextButton") then
+                if gui.Visible and string.find(string.lower(gui.Text), "waiting for a bite") then
+                    found = true
+                    break
+                end
             end
         end
-    end
-end)
+    end)
+    return found
+end
 
--- Auto Buy (500k+)
-local autoBuyActive = false
-autoBuyBtn.MouseButton1Click:Connect(function()
-    autoBuyActive = not autoBuyActive
-    autoBuyBtn.Text = "Auto Buy (500k+): " .. (autoBuyActive and "ON" or "OFF")
-    autoBuyBtn.BackgroundColor3 = autoBuyActive and Color3.fromRGB(46, 204, 113) or Color3.fromRGB(30, 33, 42)
-    
-    task.spawn(function()
-        while autoBuyActive do
-            pcall(function()
-                local char = Player.Character
-                if char and char:FindFirstChild("HumanoidRootPart") then
-                    for _, prompt in pairs(Workspace:GetDescendants()) do
-                        if not autoBuyActive then break end
-                        if prompt:IsA("ProximityPrompt") then
-                            local actionText = string.upper(prompt.ActionText or "")
-                            local objectText = string.upper(prompt.ObjectText or "")
-                            local fullPromptText = actionText .. " " .. objectText
-                            
-                            if string.find(fullPromptText, "BUY") then
-                                local part = prompt.Parent
-                                if part and part:IsA("BasePart") then
-                                    local dist = (char.HumanoidRootPart.Position - part.Position).Magnitude
-                                    if dist <= 18 then
-                                        local shouldBuy = false
-                                        local isBelowLimit = false
-                                        
-                                        local mVal = tonumber(string.match(fullPromptText, "(%d+%.?%d*)%s*M"))
-                                        if mVal then
-                                            if (mVal * 1000000) >= 500000 then shouldBuy = true else isBelowLimit = true end
-                                        end
-                                        
-                                        local kVal = tonumber(string.match(fullPromptText, "(%d+%.?%d*)%s*K"))
-                                        if kVal then
-                                            if (kVal * 1000) >= 500000 then shouldBuy = true else isBelowLimit = true end
-                                        end
-                                        
-                                        if not string.find(fullPromptText, "K") and not string.find(fullPromptText, "M") then
-                                            isBelowLimit = true
-                                        end
-                                        
-                                        if shouldBuy and not isBelowLimit then
-                                            fireproximityprompt(prompt)
-                                        end
-                                    end
-                                end
-                            end
-                        end
+-- Συνάρτηση ανίχνευσης τερματισμού minigame (ψαριά)
+local function isCatchPopupVisible()
+    local found = false
+    pcall(function()
+        for _, gui in ipairs(PlayerGui:GetDescendants()) do
+            if gui:IsA("TextLabel") or gui:IsA("TextButton") then
+                if gui.Visible then
+                    local txt = string.lower(gui.Text)
+                    if string.find(txt, "caught") or string.find(txt, "kg") or string.find(txt, "you got") then
+                        found = true
+                        break
                     end
                 end
-            end)
-            task.wait(0.3)
-        end
-    end)
-end)
-
--- Speed Boost
-local speedActive = false
-speedBtn.MouseButton1Click:Connect(function()
-    speedActive = not speedActive
-    speedBtn.Text = "Speed Boost: " .. (speedActive and "ON" or "OFF")
-    speedBtn.BackgroundColor3 = speedActive and Color3.fromRGB(46, 204, 113) or Color3.fromRGB(30, 33, 42)
-    if Player.Character and Player.Character:FindFirstChild("Humanoid") then
-        Player.Character.Humanoid.WalkSpeed = speedActive and 50 or 16
-    end
-end)
-
--- Jump Boost
-local jumpActive = false
-jumpBtn.MouseButton1Click:Connect(function()
-    jumpActive = not jumpActive
-    jumpBtn.Text = "Jump Boost: " .. (jumpActive and "ON" or "OFF")
-    jumpBtn.BackgroundColor3 = jumpActive and Color3.fromRGB(46, 204, 113) or Color3.fromRGB(30, 33, 42)
-    if Player.Character and Player.Character:FindFirstChild("Humanoid") then
-        Player.Character.Humanoid.JumpPower = jumpActive and 120 or 50
-    end
-end)
-
--- Server Hop
-serverHop.MouseButton1Click:Connect(function()
-    local ts = game:GetService("TeleportService")
-    local hs = game:GetService("HttpService")
-    local success, result = pcall(function()
-        return hs:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?sortOrder=Asc&limit=100"))
-    end)
-    if success and result and result.data then
-        for _, s in pairs(result.data) do
-            if s.playing < s.maxPlayers then
-                ts:TeleportToPlaceInstance(game.PlaceId, s.id, Player)
-                break
             end
         end
+    end)
+    return found
+end
+
+-- --- ESP: MONO ENA FOS AKRIVOS STIS SINTETAGMENES POU EDWES ---
+local targetPos = Vector3.new(-2698.9, 1.5, -11915.0)
+
+local function updateSingleESP()
+    if not espActive then
+        if singleBeamInstance then singleBeamInstance:Destroy() end
+        if singlePartAbove then singlePartAbove:Destroy() end
+        if singleHighlight then singleHighlight:Destroy() end
+        if att1 then att1:Destroy() end
+        if att2 then att2:Destroy() end
+        singleBeamInstance = nil
+        singlePartAbove = nil
+        singleHighlight = nil
+        return
+    end
+
+    if not singleBeamInstance then
+        pcall(function()
+            local bestPart = nil
+            local minDst = 9999
+            for _, obj in ipairs(Workspace:GetDescendants()) do
+                if obj:IsA("BasePart") then
+                    local dst = (obj.Position - targetPos).Magnitude
+                    if dst < minDst then
+                        minDst = dst
+                        bestPart = obj
+                    end
+                end
+            end
+
+            if bestPart then
+                singleHighlight = Instance.new("Highlight")
+                singleHighlight.Name = "EzHubSingleESP"
+                singleHighlight.Adornee = bestPart
+                singleHighlight.FillColor = Color3.fromRGB(255, 0, 0)
+                singleHighlight.FillTransparency = 0.7
+                singleHighlight.OutlineColor = Color3.fromRGB(255, 100, 100)
+                singleHighlight.OutlineTransparency = 0.1
+                singleHighlight.Parent = bestPart
+
+                att1 = Instance.new("Attachment", bestPart)
+                
+                singlePartAbove = Instance.new("Part", bestPart)
+                singlePartAbove.Size = Vector3.new(1, 1, 1)
+                singlePartAbove.Transparency = 1
+                singlePartAbove.Anchored = true
+                singlePartAbove.CanCollide = false
+                singlePartAbove.Position = targetPos + Vector3.new(0, 800, 0)
+                
+                att2 = Instance.new("Attachment", singlePartAbove)
+                
+                singleBeamInstance = Instance.new("Beam")
+                singleBeamInstance.Attachment0 = att1
+                singleBeamInstance.Attachment1 = att2
+                singleBeamInstance.Color = ColorSequence.new(Color3.fromRGB(255, 0, 0))
+                singleBeamInstance.Width0 = 25
+                singleBeamInstance.Width1 = 25
+                singleBeamInstance.FaceCamera = true
+                singleBeamInstance.Parent = bestPart
+            end
+        end)
+    end
+end
+
+-- Loop για το ESP
+task.spawn(function()
+    while true do
+        if espActive then
+            updateSingleESP()
+        end
+        task.wait(2.0)
     end
 end)
 
-leaveBtn.MouseButton1Click:Connect(function()
-    game:Shutdown()
+
+-- --- RAYFIELD UI TOGGLES & BUTTONS ---
+
+FishingTab:CreateToggle({
+   Name = "Auto Fishing",
+   CurrentValue = false,
+   Flag = "AutoFishToggle",
+   Callback = function(Value)
+      fishingActive = Value
+   end,
+})
+
+FishingTab:CreateToggle({
+   Name = "Show Fishing Area (World 6)",
+   CurrentValue = false,
+   Flag = "ESPSpotToggle",
+   Callback = function(Value)
+      espActive = Value
+      if not espActive then
+          updateSingleESP()
+      end
+   end,
+})
+
+-- SETTINGS TAB ITEMS
+SettingsTab:CreateToggle({
+   Name = "Anti-Idle (Always ON)",
+   CurrentValue = true,
+   Flag = "AntiIdleToggle",
+   Callback = function(Value)
+      if not Value then
+          Rayfield:Notify({Title = "Anti-Idle", Content = "To Anti-Idle einai kleiodomeno sto ON!", Duration = 3})
+      end
+   end,
+})
+
+SettingsTab:CreateButton({
+   Name = "Low Graphics (FPS Boost)",
+   Callback = function()
+      pcall(function()
+          settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+          Lighting.GlobalShadows = false
+          Lighting.FogEnd = 999999
+          for _, v in pairs(Workspace:GetDescendants()) do
+              if v:IsA("Part") or v:IsA("MeshPart") or v:IsA("UnionOperation") then
+                  v.Material = Enum.Material.SmoothPlastic
+                  v.Reflectance = 0
+              elseif v:IsA("Decal") or v:IsA("Texture") then
+                  v.Transparency = 1
+              end
+          end
+      end)
+      Rayfield:Notify({Title = "FPS Boost", Content = "Ta grafika xamilosan gia megista FPS!", Duration = 3})
+   end,
+})
+
+SettingsTab:CreateButton({
+   Name = "Rejoin Server",
+   Callback = function()
+      pcall(function()
+          Rayfield:Notify({Title = "Rejoin", Content = "Ginetai rejoin ston server...", Duration = 2})
+          task.wait(1)
+          TeleportService:Teleport(game.PlaceId, Player)
+      end)
+   end,
+})
+
+-- --- Αδιάσπαστος Κύκλος Ψαρέματος ---
+task.spawn(function()
+    while true do
+        if fishingActive then
+            pcall(function()
+                local camSize = Workspace.CurrentCamera.ViewportSize
+                local castX = camSize.X * 0.82
+                local castY = camSize.Y * 0.55
+                
+                if not isWaitingForBite() then
+                    tapScreen(castX, castY)
+                end
+                
+                local confirmTimeout = tick()
+                local castConfirmed = false
+                while fishingActive and (tick() - confirmTimeout < 5.0) do
+                    if isWaitingForBite() then
+                        castConfirmed = true
+                        break
+                    end
+                    task.wait(0.1)
+                end
+                
+                if not castConfirmed or not fishingActive then 
+                    task.wait(1.5)
+                    return 
+                end
+                
+                local biteTimeout = tick()
+                while fishingActive do
+                    if not isWaitingForBite() then
+                        break
+                    end
+                    if tick() - biteTimeout > 35 then 
+                        break 
+                    end
+                    task.wait(0.15)
+                end
+                
+                if not fishingActive then return end
+                
+                task.wait(0.2)
+                
+                local spamX = camSize.X * 0.35
+                local spamY = camSize.Y * 0.4
+                
+                local spamStart = tick()
+                while fishingActive and (tick() - spamStart < 6.0) do
+                    if isWaitingForBite() or isCatchPopupVisible() then
+                        break
+                    end
+                    
+                    tapScreen(spamX, spamY)
+                    task.wait(0.04)
+                end
+                
+                local restStart = tick()
+                while fishingActive and (tick() - restStart < 2.8) do
+                    task.wait(0.1)
+                end
+            end)
+        end
+        task.wait(0.2)
+    end
 end)
+
+Rayfield:LoadConfiguration()
